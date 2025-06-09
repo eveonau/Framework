@@ -25,7 +25,6 @@ local function checkValidFile(requiredFile : {[any]: any}, extra : boolean)
     end
 
     if extra then
-
         if not requiredFile.Start or type(requiredFile.start) ~= `function` then
             warn(`[{Runner.GAME_NAME.Value}] File does not have a start function.`)
             return false

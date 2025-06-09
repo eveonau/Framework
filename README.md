@@ -1,10 +1,11 @@
 
-[Network Usage]("https://ffrostfall.github.io/ByteNet/")
+Network Usage - "https://ffrostfall.github.io/ByteNet/"
+
+Access offered through Runner.Network
 ```luau
   local Runner = require(path.to.framework)
   local Network = Runner.Network
 ```
-
 
 Runner usage:
 
@@ -19,6 +20,12 @@ Runner usage:
   Runner:Init()
   --@return Future
   Runner:Start()
+```
+
+Add to wally in your dependencies!
+```txt
+[dependencies]
+Framework = "eveonau/framework@0.1.1"
 ```
 
 Use bytenet.
