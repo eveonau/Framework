@@ -7,9 +7,10 @@ local Future = require(`../Packages/Future`)
 
 local Runner = {
     __files = {},
+    Network = require(`../Packages/bytenet`),
     Started = false,
     Initalized = false,
-    GAME_NAME = Instance.new("StringValue", script)
+    GAME_NAME = RunService:IsServer() and Instance.new("StringValue", script) or script:WaitForChild("StringValue", 10),
 }
 
 local function checkValidFile(requiredFile : {[any]: any}, extra : boolean)
@@ -74,6 +75,14 @@ function Runner.CreateFile(self : Runner, file: {["ClassName"] : string, [any] :
 
     self.__files[ClassName] = file
     return file
+end
+
+function Runner:ChangeName(name : string)
+    if type(name) ~= `string` then
+        warn(`[{Runner.GAME_NAME.Value}] Game name must be a string.`)
+        return
+    end
+    self.GAME_NAME.Value = name
 end
 
 function Runner.InitFilesFromParent(self : Runner, Parent : Instance)

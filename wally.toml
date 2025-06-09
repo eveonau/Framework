@@ -1,6 +1,6 @@
 [package]
-name = "user/framework"
-version = "0.1.0"
+name = "eveonau/framework"
+version = "0.0.1"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
