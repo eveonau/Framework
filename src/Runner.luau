@@ -3,36 +3,35 @@
 -- Framework v0.1
 
 local RunService = game:GetService(`RunService`)
-local Future = require(`./Packages/Future`)
+local Future = require(`../Packages/Future`)
 
 local Runner = {
     __files = {},
     Started = false,
     Initalized = false,
+    GAME_NAME = Instance.new("StringValue", script)
 }
-
-local GAME_NAME = "Sushi Tease"
 
 local function checkValidFile(requiredFile : {[any]: any}, extra : boolean)
     if type(requiredFile) ~= `table` then
-        warn(`[{GAME_NAME}] File is not a table, cannot require.`)
+        warn(`[{Runner.GAME_NAME.Value}] File is not a table, cannot require.`)
         return false
     end
 
     if not requiredFile.ClassName then
-        warn(`[{GAME_NAME}] File does not have a ClassName.`)
+        warn(`[{Runner.GAME_NAME.Value}] File does not have a ClassName.`)
         return false
     end
 
     if extra then
 
         if not requiredFile.Start or type(requiredFile.start) ~= `function` then
-            warn(`[{GAME_NAME}] File does not have a start function.`)
+            warn(`[{Runner.GAME_NAME.Value}] File does not have a start function.`)
             return false
         end
 
         if not requiredFile.Init or type(requiredFile.start) ~= `function` then
-            warn(`[{GAME_NAME}] File does not have a init function.`)
+            warn(`[{Runner.GAME_NAME.Value}] File does not have a init function.`)
             return false
         end
 
@@ -52,7 +51,7 @@ function Runner.CreateFile(self : Runner, file: {["ClassName"] : string, [any] :
     --Led with - to hide functions from the user 
     function file._Start(internalSelf)
         -- local success, reason = Future.Try(function()
-            if internalSelf.__started then warn(`[{GAME_NAME}] Cannot start multiple times.`); return end
+            if internalSelf.__started then warn(`[{Runner.GAME_NAME.Value}] Cannot start multiple times.`); return end
             if internalSelf.Start and type(internalSelf.Start) == `function` then
                 internalSelf:Start()
             end
@@ -66,7 +65,7 @@ function Runner.CreateFile(self : Runner, file: {["ClassName"] : string, [any] :
         end)
 
         if not success then
-            warn(`[{GAME_NAME}] Failed to init file {internalSelf.ClassName}: {reason}`)
+            warn(`[{Runner.GAME_NAME.Value}] Failed to init file {internalSelf.ClassName}: {reason}`)
         end
         return success
     end
@@ -82,53 +81,53 @@ function Runner.InitFilesFromParent(self : Runner, Parent : Instance)
         if v.Name:sub(0, 1) == `_` then continue end
         local a = tick()
         if v:IsA("ModuleScript") then require(v) end
-        print(`[${GAME_NAME}] Required file`, v.Name, "in", math.round(tick() - a), "seconds")
+        print(`[${Runner.GAME_NAME.Value}] Required file`, v.Name, "in", math.round(tick() - a), "seconds")
     end
 end
 
 function Runner.Init(self : Runner)
     return Future.new(function()
-        if self.Initalized then warn(`[{GAME_NAME}] Cannot initalize multiple times.`); return end
+        if self.Initalized then warn(`[{Runner.GAME_NAME.Value}] Cannot initalize multiple times.`); return end
         
         -- if RunService:IsServer() then
         --     for i,v in game.ServerStorage.Modules:GetChildren() do
         --         if v.Name:sub(0, 1) == `_` then continue end
         --         local file = require(v)
         --         file:_Init()
-        --         print(`[{GAME_NAME}]: Initalized file {file.ClassName}`)
+        --         print(`[{Runner.GAME_NAME.Value}]: Initalized file {file.ClassName}`)
         --     end
         -- else
         --     for i,v in game.ReplicatedStorage.Modules:GetChildren() do
         --         if v.Name:sub(0, 1) == `_` then continue end
         --         local file = require(v)
         --         file:_Init()
-        --         print(`[{GAME_NAME}]: Initalized file {file.ClassName}`)
+        --         print(`[{Runner.GAME_NAME.Value}]: Initalized file {file.ClassName}`)
         --     end
         -- end
         for i,v in self.__files do
             local t = tick()
             v:_Init()
-            print(`[{GAME_NAME}]: Initalized file {v.ClassName} after {math.round(tick() - t)}s`)
+            print(`[{Runner.GAME_NAME.Value}]: Initalized file {v.ClassName} after {math.round(tick() - t)}s`)
         end
 
         self.Initalized = true
-        print(`[{GAME_NAME}]: Initalized all files.`)
+        print(`[{Runner.GAME_NAME.Value}]: Initalized all files.`)
     end)
 end
 
 function Runner.Start(self : Runner)
     return Future.new(function()
-        if not self.Initalized then warn(`[{GAME_NAME}] Cannot start without intalizing files.`); return end
-        if self.Started then warn(`[{GAME_NAME}] Cannot start multiple times.`); return end
+        if not self.Initalized then warn(`[{Runner.GAME_NAME.Value}] Cannot start without intalizing files.`); return end
+        if self.Started then warn(`[{Runner.GAME_NAME.Value}] Cannot start multiple times.`); return end
 
         for i,v in self.__files do
             local t = tick() 
             v:_Start()
             v.__started = true
-            print(`[{GAME_NAME}]: Started file {v.ClassName} after {math.round(tick() - t)}s`)
+            print(`[{Runner.GAME_NAME.Value}]: Started file {v.ClassName} after {math.round(tick() - t)}s`)
         end
         self.Started = true
-        print(`[{GAME_NAME}]: Started all {RunService:IsClient() and `client` or `server`} files ✅`)
+        print(`[{Runner.GAME_NAME.Value}]: Started all {RunService:IsClient() and `client` or `server`} files ✅`)
     end)
 end
 

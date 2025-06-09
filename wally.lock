@@ -3,6 +3,11 @@
 registry = "test"
 
 [[package]]
+name = "ffrostflame/bytenet"
+version = "0.4.6"
+dependencies = []
+
+[[package]]
 name = "red-blox/future"
 version = "1.0.1"
 dependencies = [["Spawn", "red-blox/spawn@1.1.0"]]
@@ -15,4 +20,4 @@ dependencies = []
 [[package]]
 name = "user/framework"
 version = "0.1.0"
-dependencies = [["Future", "red-blox/future@1.0.1"]]
+dependencies = [["Future", "red-blox/future@1.0.1"], ["bytenet", "ffrostflame/bytenet@0.4.6"]]
