@@ -10,7 +10,7 @@ local Runner = {
     Network = require(`./bytenet`),
     Started = false,
     Initalized = false,
-    GAME_NAME = RunService:IsServer() and Instance.new("StringValue", script) or script:WaitForChild("StringValue", 10),
+    GAME_NAME = RunService:IsServer() and Instance.new("StringValue", script) or script:WaitForChild("Value", 10),
 }
 
 local function checkValidFile(requiredFile : {[any]: any}, extra : boolean)
@@ -85,33 +85,19 @@ function Runner:ChangeName(name : string)
 end
 
 function Runner.InitFilesFromParent(self : Runner, Parent : Instance)
+    print(`--------------------------------------------------------`)
     for i,v in Parent:GetDescendants() do
         if v.Name:sub(0, 1) == `_` then continue end
         local a = tick()
         if v:IsA("ModuleScript") then require(v) end
-        print(`[${Runner.GAME_NAME.Value}] Required file`, v.Name, "in", math.round(tick() - a), "seconds")
+        print(`[{Runner.GAME_NAME.Value}] Required file`, v.Name, "in", math.round(tick() - a), "seconds")
     end
 end
 
 function Runner.Init(self : Runner)
     return Future.new(function()
         if self.Initalized then warn(`[{Runner.GAME_NAME.Value}] Cannot initalize multiple times.`); return end
-        
-        -- if RunService:IsServer() then
-        --     for i,v in game.ServerStorage.Modules:GetChildren() do
-        --         if v.Name:sub(0, 1) == `_` then continue end
-        --         local file = require(v)
-        --         file:_Init()
-        --         print(`[{Runner.GAME_NAME.Value}]: Initalized file {file.ClassName}`)
-        --     end
-        -- else
-        --     for i,v in game.ReplicatedStorage.Modules:GetChildren() do
-        --         if v.Name:sub(0, 1) == `_` then continue end
-        --         local file = require(v)
-        --         file:_Init()
-        --         print(`[{Runner.GAME_NAME.Value}]: Initalized file {file.ClassName}`)
-        --     end
-        -- end
+       
         for i,v in self.__files do
             local t = tick()
             v:_Init()
@@ -120,6 +106,7 @@ function Runner.Init(self : Runner)
 
         self.Initalized = true
         print(`[{Runner.GAME_NAME.Value}]: Initalized all files.`)
+        print(`--------------------------------------------------------`)
     end)
 end
 
@@ -136,6 +123,8 @@ function Runner.Start(self : Runner)
         end
         self.Started = true
         print(`[{Runner.GAME_NAME.Value}]: Started all {RunService:IsClient() and `client` or `server`} files ✅`)
+        print(`--------------------------------------------------------`)
+        print(`Welcome to {self.GAME_NAME.Value}, {RunService:IsClient() and game.Players.LocalPlayer.Name or `Server`}!`)
     end)
 end
 
